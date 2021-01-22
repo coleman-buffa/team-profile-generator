@@ -11,7 +11,10 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-const questions = [
+const empRoster = [];
+
+function promptUser() {
+	inquirer.prompt([
 	{
 		type: 'input',
 		name: 'name',
@@ -51,24 +54,34 @@ const questions = [
 		message: 'Enter office number for this manager:',
 		when: (answers) => answers.emptype === 'Manager',
 	}
-];
+	]).then ( function (answers) {
+		empRoster.push(answers);
+		console.log(empRoster);
+		goAgain();
+	})
+}
 
-const promptUser = (qList) => {
-	return inquirer.prompt(qList);
-};
+function goAgain () {
+	inquirer.prompt([
+		{
+			type: 'list',
+			name: 'exitChoice',
+			message: 'Would you like to enter another employee?',
+			choices: ['Yes', 'No'],
+		},
+	]).then ( function (userChoice) {
+		switch (userChoice.exitChoice) {
+			case 'Yes':
+				promptUser();
+				break;
+			case 'No':
+				console.log('\n Your web page is being created...');
+				//Call HTML render here?
+		}
+	})
+}
 
-
-async function init() {
-	try {
-		const answers = await promptUser(questions);
-		console.log(answers);
-
-	} catch (err) {
-		console.log(err);
-	}
-};
-
-init();
+promptUser();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
