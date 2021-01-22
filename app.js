@@ -55,7 +55,17 @@ function promptUser() {
 		when: (answers) => answers.emptype === 'Manager',
 	}
 	]).then ( function (answers) {
-		empRoster.push(answers);
+		switch (answers.emptype) {
+			case 'Engineer':
+				empRoster.push(new Engineer(answers.name, answers.id, answers.email, answers.github));
+				break;
+			case 'Intern':
+				empRoster.push(new Intern(answers.name, answers.id, answers.email, answers.school));
+				break;
+			case 'Manager':
+				empRoster.push(new Manager(answers.name, answers.id, answers.email, answers.office));
+				break;
+		}
 		console.log(empRoster);
 		goAgain();
 	})
@@ -76,7 +86,7 @@ function goAgain () {
 				break;
 			case 'No':
 				console.log('\n Your web page is being created...');
-				//Call HTML render here?
+				render(empRoster);
 		}
 	})
 }
