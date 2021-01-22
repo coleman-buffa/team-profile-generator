@@ -4,12 +4,71 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const questions = [
+	{
+		type: 'input',
+		name: 'name',
+		message: 'Enter employee name:',
+	},
+	{
+		type: 'input',
+		name: 'id',
+		message: 'Enter emplyee ID:',
+	},
+	{
+		type: 'input',
+		name: 'email',
+		message: 'Enter employee email',
+	},
+	{
+		type: 'list',
+		name: 'emptype',
+		message: 'Select employee type',
+		choices: ['Engineer', 'Intern', 'Manager'],
+	},
+	{
+		type: 'input',
+		name: 'github',
+		message: 'Enter GitHub user name:',
+		when: (answers) => answers.emptype === 'Engineer',
+	},
+	{
+		type: 'input',
+		name: 'school',
+		message: 'Enter school the intern attends:',
+		when: (answers) => answers.emptype === 'Intern',		
+	},
+	{
+		type: 'input',
+		name: 'office',
+		message: 'Enter office number for this manager:',
+		when: (answers) => answers.emptype === 'Manager',
+	}
+];
+
+const promptUser = (qList) => {
+	return inquirer.prompt(qList);
+};
+
+
+async function init() {
+	try {
+		const answers = await promptUser(questions);
+		console.log(answers);
+
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+init();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
