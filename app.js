@@ -13,7 +13,35 @@ const render = require("./lib/htmlRenderer");
 
 const empRoster = [];
 
-function promptUser() {
+function promptManager() {
+	inquirer.prompt([
+		{
+			type:'input',
+			name: 'name',
+			message: 'Enter employee name:',
+		},
+		{
+			type: 'input',
+			name: 'id',
+			message: 'Enter emplyee ID:',
+		},
+		{
+			type: 'input',
+			name: 'email',
+			message: 'Enter employee email:',
+		},
+		{
+			type: 'input',
+			name: 'office',
+			message: 'Enter office number:',
+		}
+	]).then ( function (answers) {
+		empRoster.push(new Manager(answers.name, answers.id, answers.email, answers.office));
+		goAgain();
+	})
+}
+
+function promptEmployee() {
 	inquirer.prompt([
 	{
 		type: 'input',
@@ -28,13 +56,13 @@ function promptUser() {
 	{
 		type: 'input',
 		name: 'email',
-		message: 'Enter employee email',
+		message: 'Enter employee email:',
 	},
 	{
 		type: 'list',
 		name: 'emptype',
 		message: 'Select employee type',
-		choices: ['Engineer', 'Intern', 'Manager'],
+		choices: ['Engineer', 'Intern'],
 	},
 	{
 		type: 'input',
@@ -47,12 +75,6 @@ function promptUser() {
 		name: 'school',
 		message: 'Enter school the intern attends:',
 		when: (answers) => answers.emptype === 'Intern',		
-	},
-	{
-		type: 'input',
-		name: 'office',
-		message: 'Enter office number for this manager:',
-		when: (answers) => answers.emptype === 'Manager',
 	}
 	]).then ( function (answers) {
 		switch (answers.emptype) {
@@ -62,12 +84,10 @@ function promptUser() {
 			case 'Intern':
 				empRoster.push(new Intern(answers.name, answers.id, answers.email, answers.school));
 				break;
-			case 'Manager':
-				empRoster.push(new Manager(answers.name, answers.id, answers.email, answers.office));
-				break;
 		}
 		console.log(empRoster);
 		goAgain();
+
 	})
 }
 
@@ -82,7 +102,7 @@ function goAgain () {
 	]).then ( function (userChoice) {
 		switch (userChoice.exitChoice) {
 			case 'Yes':
-				promptUser();
+				promptEmployee();
 				break;
 			case 'No':
 				console.log('\n Your web page is being created...');
@@ -91,7 +111,7 @@ function goAgain () {
 	})
 }
 
-promptUser();
+promptManager();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
