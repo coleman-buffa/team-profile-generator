@@ -4,7 +4,6 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-const util = require("util");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
@@ -13,17 +12,17 @@ const render = require("./lib/htmlRenderer");
 
 const empRoster = [];
 
-function promptManager() {
+async function promptManager() {
 	inquirer.prompt([
 		{
-			type:'input',
+			type: 'input',
 			name: 'name',
 			message: 'Enter employee name:',
 		},
 		{
 			type: 'input',
 			name: 'id',
-			message: 'Enter emplyee ID:',
+			message: 'Enter employee ID:',
 		},
 		{
 			type: 'input',
@@ -35,63 +34,55 @@ function promptManager() {
 			name: 'office',
 			message: 'Enter office number:',
 		}
-	]).then ( function (answers) {
-		empRoster.push(new Manager(answers.name, answers.id, answers.email, answers.office));
+	]).then(function (answers) {
+		answers.emptype = 'Manager';
+		rosterAdd(answers);
 		goAgain();
 	})
 }
 
 function promptEmployee() {
 	inquirer.prompt([
-	{
-		type: 'input',
-		name: 'name',
-		message: 'Enter employee name:',
-	},
-	{
-		type: 'input',
-		name: 'id',
-		message: 'Enter emplyee ID:',
-	},
-	{
-		type: 'input',
-		name: 'email',
-		message: 'Enter employee email:',
-	},
-	{
-		type: 'list',
-		name: 'emptype',
-		message: 'Select employee type',
-		choices: ['Engineer', 'Intern'],
-	},
-	{
-		type: 'input',
-		name: 'github',
-		message: 'Enter GitHub user name:',
-		when: (answers) => answers.emptype === 'Engineer',
-	},
-	{
-		type: 'input',
-		name: 'school',
-		message: 'Enter school the intern attends:',
-		when: (answers) => answers.emptype === 'Intern',		
-	}
-	]).then ( function (answers) {
-		switch (answers.emptype) {
-			case 'Engineer':
-				empRoster.push(new Engineer(answers.name, answers.id, answers.email, answers.github));
-				break;
-			case 'Intern':
-				empRoster.push(new Intern(answers.name, answers.id, answers.email, answers.school));
-				break;
+		{
+			type: 'input',
+			name: 'name',
+			message: 'Enter employee name:',
+		},
+		{
+			type: 'input',
+			name: 'id',
+			message: 'Enter employee ID:',
+		},
+		{
+			type: 'input',
+			name: 'email',
+			message: 'Enter employee email:',
+		},
+		{
+			type: 'list',
+			name: 'emptype',
+			message: 'Select employee type',
+			choices: ['Engineer', 'Intern'],
+		},
+		{
+			type: 'input',
+			name: 'github',
+			message: 'Enter GitHub user name:',
+			when: (answers) => answers.emptype === 'Engineer',
+		},
+		{
+			type: 'input',
+			name: 'school',
+			message: 'Enter school the intern attends:',
+			when: (answers) => answers.emptype === 'Intern',
 		}
-		console.log(empRoster);
+	]).then(function (answers) {
+		rosterAdd(answers);
 		goAgain();
-
-	})
+	});
 }
 
-function goAgain () {
+function goAgain() {
 	inquirer.prompt([
 		{
 			type: 'list',
@@ -99,16 +90,36 @@ function goAgain () {
 			message: 'Would you like to enter another employee?',
 			choices: ['Yes', 'No'],
 		},
-	]).then ( function (userChoice) {
+	]).then(function (userChoice) {
 		switch (userChoice.exitChoice) {
 			case 'Yes':
 				promptEmployee();
 				break;
 			case 'No':
-				console.log('\n Your web page is being created...');
-				render(empRoster);
+				if (!fs.existsSync(OUTPUT_DIR)) {
+					fs.mkdirSync(OUTPUT_DIR);
+				}
+				fs.writeFile(outputPath, render(empRoster), (err) => {
+					if (err) throw err;
+					console.log('\n Your web page is being created...');
+				});
+				break;
 		}
 	})
+}
+
+function rosterAdd(employee) {
+	switch (employee.emptype) {
+		case 'Manager':
+			empRoster.push(new Manager(employee.name, employee.id, employee.email, employee.office));
+			break;
+		case 'Engineer':
+			empRoster.push(new Engineer(employee.name, employee.id, employee.email, employee.github));
+			break;
+		case 'Intern':
+			empRoster.push(new Intern(employee.name, employee.id, employee.email, employee.school));
+			break;
+	}
 }
 
 promptManager();
