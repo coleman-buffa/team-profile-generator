@@ -76,6 +76,6 @@ My thanks to the many mentors and friends who are a constant source of project i
 
 ## License
 
-License information goes here...
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ### [Back to Table of Contents](#table-of-contents)
