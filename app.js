@@ -18,7 +18,7 @@ const empRoster = [];
 //Starting point for the application where the user gets to input the 
 //manager's info. Then the function calls the goAgain funcion which
 //can continue the process as long as the user wants.
-async function promptManager() {
+function promptManager() {
 	inquirer.prompt([
 		{
 			type: 'input',
