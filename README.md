@@ -6,8 +6,8 @@ The Team Profile Generator is a command line interface application that takes in
 
 ## Table of Contents
 
-||||
-|:-|:-|:-|:-|:-
+| |||
+|:-|:-|:-|
 | [Project Introduction](#team-profile-generator) | [Table of Contents](#table-of-contents) | [Goals and Methods](#goals-and-methods) 
 | [Installation](#installation) | [Technologies](#technologies) | [Deployed Link](#deployed-link) |
 | [Authors](#authors) | [Acknowledgments](#acknowledgments) | [License](#license) |
